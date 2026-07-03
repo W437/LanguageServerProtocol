@@ -15,6 +15,7 @@ public actor JSONRPCServerConnection: ServerConnection {
 		(self.eventSequence, self.eventContinuation) = EventSequence.makeStream()
 
 		Task {
+			await configureRequestCancellation()
 			await startMonitoringSession()
 		}
 	}
@@ -22,6 +23,23 @@ public actor JSONRPCServerConnection: ServerConnection {
 	deinit {
 		eventTask?.cancel()
 		eventContinuation.finish()
+	}
+
+	/// When a request's awaiting task is cancelled, the session resumes it locally with
+	/// `CancellationError` — this additionally tells the server to stop the abandoned work.
+	private func configureRequestCancellation() async {
+		await session.setRequestCancellation { [weak self] id in
+			let params: CancelParams
+
+			switch id {
+			case .numericId(let value):
+				params = CancelParams(id: value)
+			case .stringId(let value):
+				params = CancelParams(id: value)
+			}
+
+			try? await self?.sendNotification(.protocolCancelRequest(params))
+		}
 	}
 
 	private func startMonitoringSession() async {

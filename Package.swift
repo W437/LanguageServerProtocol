@@ -9,7 +9,7 @@ let package = Package(
 		.library(name: "LanguageServerProtocol", targets: ["LanguageServerProtocol"]),
 	],
 	dependencies: [
-		.package(url: "https://github.com/ChimeHQ/JSONRPC", from: "0.9.0"),
+		.package(url: "https://github.com/W437/JSONRPC", from: "0.9.0"),
 
 	],
 	targets: [

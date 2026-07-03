@@ -3,10 +3,10 @@
     {
       "identity" : "jsonrpc",
       "kind" : "remoteSourceControl",
-      "location" : "https://github.com/ChimeHQ/JSONRPC",
+      "location" : "https://github.com/W437/JSONRPC",
       "state" : {
-        "revision" : "c6ec759d41a76ac88fe7327c41a77d9033943374",
-        "version" : "0.9.0"
+        "revision" : "1bd586dc23cddac057a8c1cd2bf57f9c26ffedb7",
+        "version" : "0.9.90"
       }
     }
   ],
