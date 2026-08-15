@@ -111,6 +111,8 @@ public actor JSONRPCServerConnection: ServerConnection {
 			return try await session.response(to: method)
 		case .workspaceExecuteCommand(let params, _):
 			return try await session.response(to: method, params: params)
+		case .workspaceDiagnostics(let params, _):
+			return try await session.response(to: method, params: params)
 		case .workspaceInlayHintRefresh:
 			return try await session.response(to: method)
 		case .workspaceWillCreateFiles(let params, _):
@@ -347,6 +349,10 @@ public actor JSONRPCServerConnection: ServerConnection {
 				let reqHandler = makeErrorOnlyHandler(handler)
 
 				yield(id: id, request: ServerRequest.workspaceCodeLensRefresh(reqHandler))
+			case .workspaceDiagnosticRefresh:
+				let reqHandler = makeErrorOnlyHandler(handler)
+
+				yield(id: id, request: ServerRequest.workspaceDiagnosticRefresh(reqHandler))
 			case .workspaceSemanticTokenRefresh:
 				let reqHandler = makeErrorOnlyHandler(handler)
 

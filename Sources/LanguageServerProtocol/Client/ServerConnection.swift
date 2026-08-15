@@ -657,6 +657,19 @@ extension ServerConnection {
 		try await sendRequest(.diagnostics(params, ClientRequest.NullHandler))
 	}
 
+	@available(*, deprecated, renamed: "workspaceDiagnostics(_:)")
+	public func workspaceDiagnostics(params: WorkspaceDiagnosticParams) async throws
+		-> WorkspaceDiagnosticReport
+	{
+		try await workspaceDiagnostics(params)
+	}
+
+	public func workspaceDiagnostics(_ params: WorkspaceDiagnosticParams) async throws
+		-> WorkspaceDiagnosticReport
+	{
+		try await sendRequest(.workspaceDiagnostics(params, ClientRequest.NullHandler))
+	}
+
 	@available(*, deprecated, renamed: "selectionRange(_:)")
 	public func selectionRange(params: SelectionRangeParams) async throws -> SelectionRangeResponse
 	{

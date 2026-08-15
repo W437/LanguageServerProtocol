@@ -116,13 +116,26 @@ public struct MarkdownClientCapabilities: Hashable, Codable, Sendable {
 public struct GeneralClientCapabilities: Hashable, Codable, Sendable {
 	public var regularExpressions: RegularExpressionsClientCapabilities?
 	public var markdown: MarkdownClientCapabilities?
+	public var staleRequestSupport: StaleRequestSupportOptions?
 
 	public init(
 		regularExpressions: RegularExpressionsClientCapabilities?,
-		markdown: MarkdownClientCapabilities?
+		markdown: MarkdownClientCapabilities?,
+		staleRequestSupport: StaleRequestSupportOptions? = nil
 	) {
 		self.regularExpressions = regularExpressions
 		self.markdown = markdown
+		self.staleRequestSupport = staleRequestSupport
+	}
+}
+
+public struct StaleRequestSupportOptions: Hashable, Codable, Sendable {
+	public var cancel: Bool
+	public var retryOnContentModified: [String]
+
+	public init(cancel: Bool, retryOnContentModified: [String]) {
+		self.cancel = cancel
+		self.retryOnContentModified = retryOnContentModified
 	}
 }
 
@@ -271,6 +284,7 @@ public struct ClientCapabilities: Codable, Hashable, Sendable {
 		public let semanticTokens: SemanticTokensWorkspaceClientCapabilities?
 		public let codeLens: CodeLensWorkspaceClientCapabilities?
 		public let fileOperations: FileOperations?
+		public let diagnostics: DiagnosticWorkspaceClientCapabilities?
 
 		public init(
 			applyEdit: Bool,
@@ -283,7 +297,8 @@ public struct ClientCapabilities: Codable, Hashable, Sendable {
 			configuration: Bool?,
 			semanticTokens: SemanticTokensWorkspaceClientCapabilities?,
 			codeLens: CodeLensWorkspaceClientCapabilities? = nil,
-			fileOperations: FileOperations? = nil
+			fileOperations: FileOperations? = nil,
+			diagnostics: DiagnosticWorkspaceClientCapabilities? = nil
 		) {
 			self.applyEdit = applyEdit
 			self.workspaceEdit = workspaceEdit
@@ -296,6 +311,7 @@ public struct ClientCapabilities: Codable, Hashable, Sendable {
 			self.semanticTokens = semanticTokens
 			self.codeLens = codeLens
 			self.fileOperations = fileOperations
+			self.diagnostics = diagnostics
 		}
 	}
 

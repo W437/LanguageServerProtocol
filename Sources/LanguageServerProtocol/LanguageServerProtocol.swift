@@ -120,6 +120,7 @@ public enum ClientRequest: Sendable {
 		case initialize
 		case shutdown
 		case workspaceExecuteCommand = "workspace/executeCommand"
+		case workspaceDiagnostic = "workspace/diagnostic"
 		case workspaceInlayHintRefresh = "workspace/inlayHint/refresh"
 		case workspaceWillCreateFiles = "workspace/willCreateFiles"
 		case workspaceWillRenameFiles = "workspace/willRenameFiles"
@@ -174,6 +175,7 @@ public enum ClientRequest: Sendable {
 	case initialize(InitializeParams, Handler<InitializationResponse>)
 	case shutdown(Handler<LSPAny?>)
 	case workspaceExecuteCommand(ExecuteCommandParams, Handler<LSPAny?>)
+	case workspaceDiagnostics(WorkspaceDiagnosticParams, Handler<WorkspaceDiagnosticReport>)
 	case workspaceInlayHintRefresh(Handler<LSPAny?>)
 	case workspaceWillCreateFiles(CreateFilesParams, Handler<WorkspaceEdit?>)
 	case workspaceWillRenameFiles(RenameFilesParams, Handler<WorkspaceEdit?>)
@@ -234,6 +236,8 @@ public enum ClientRequest: Sendable {
 			return .shutdown
 		case .workspaceExecuteCommand:
 			return .workspaceExecuteCommand
+		case .workspaceDiagnostics:
+			return .workspaceDiagnostic
 		case .workspaceInlayHintRefresh:
 			return .workspaceInlayHintRefresh
 		case .workspaceWillCreateFiles:
@@ -432,6 +436,8 @@ extension ClientRequest: Equatable {
 			return lhsParam == rhsParam
 		case let (.workspaceExecuteCommand(lhsParam, _), .workspaceExecuteCommand(rhsParam, _)):
 			return lhsParam == rhsParam
+		case let (.workspaceDiagnostics(lhsParam, _), .workspaceDiagnostics(rhsParam, _)):
+			return lhsParam == rhsParam
 		case (.workspaceInlayHintRefresh, .workspaceInlayHintRefresh):
 			return true
 		case let (.workspaceSymbol(lhsParam, _), .workspaceSymbol(rhsParam, _)):
@@ -503,6 +509,7 @@ public enum ServerRequest: Sendable {
 		case clientRegisterCapability = "client/registerCapability"
 		case clientUnregisterCapability = "client/unregisterCapability"
 		case workspaceCodeLensRefresh = "workspace/codeLens/refresh"
+		case workspaceDiagnosticRefresh = "workspace/diagnostic/refresh"
 		case workspaceSemanticTokenRefresh = "workspace/semanticTokens/refresh"
 		case windowShowMessageRequest = "window/showMessageRequest"
 		case windowShowDocument = "window/showDocument"
@@ -516,6 +523,7 @@ public enum ServerRequest: Sendable {
 	case clientRegisterCapability(RegistrationParams, ErrorOnlyHandler)
 	case clientUnregisterCapability(UnregistrationParams, ErrorOnlyHandler)
 	case workspaceCodeLensRefresh(ErrorOnlyHandler)
+	case workspaceDiagnosticRefresh(ErrorOnlyHandler)
 	case workspaceSemanticTokenRefresh(ErrorOnlyHandler)
 	case windowShowMessageRequest(ShowMessageRequestParams, Handler<ShowMessageRequestResponse>)
 	case windowShowDocument(ShowDocumentParams, Handler<ShowDocumentResult>)
@@ -536,6 +544,8 @@ public enum ServerRequest: Sendable {
 			return .clientUnregisterCapability
 		case .workspaceCodeLensRefresh:
 			return .workspaceCodeLensRefresh
+		case .workspaceDiagnosticRefresh:
+			return .workspaceDiagnosticRefresh
 		case .workspaceSemanticTokenRefresh:
 			return .workspaceSemanticTokenRefresh
 		case .windowShowMessageRequest:
@@ -565,6 +575,8 @@ public enum ServerRequest: Sendable {
 		case let .clientUnregisterCapability(_, handler):
 			await handler(protocolError)
 		case let .workspaceCodeLensRefresh(handler):
+			await handler(protocolError)
+		case let .workspaceDiagnosticRefresh(handler):
 			await handler(protocolError)
 		case let .workspaceSemanticTokenRefresh(handler):
 			await handler(protocolError)
